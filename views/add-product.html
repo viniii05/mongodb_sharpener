@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            text-align: center;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: #333;
+            border-radius: 10px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Add Product</h2>
+    <form id="productForm">
+        <input type="text" id="title" placeholder="Product Title" required>
+        <input type="number" id="price" placeholder="Price" required>
+        <textarea id="description" placeholder="Description" required></textarea>
+        <input type="text" id="imageUrl" placeholder="Image URL" required>
+        <button type="submit">Add Product</button>
+    </form>
+
+    <script>
+        document.getElementById("productForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const productData = {
+                title: document.getElementById("title").value,
+                price: document.getElementById("price").value,
+                description: document.getElementById("description").value,
+                imageUrl: document.getElementById("imageUrl").value
+            };
+
+            const response = await fetch("http://localhost:3000/add-product", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(productData),
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
+    </script>
+
+</body>
+</html>
