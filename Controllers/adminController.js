@@ -1,7 +1,6 @@
 const path = require("path");
 const Product = require("../models/product");
 
-// Controller to handle adding a product
 exports.postAddProduct = async (req, res) => {
     try {
         const { title, price, description, imageUrl } = req.body;
@@ -21,7 +20,6 @@ exports.postAddProduct = async (req, res) => {
     }
 };
 
-// Controller to serve the add-product page
 exports.getAddProductPage = (req, res) => {
-    res.sendFile(path.join(__dirname, "../public/addProduct.html")); // Ensure path is correct
+    res.sendFile(path.join(__dirname, "../views/add-product.html")); 
 };
