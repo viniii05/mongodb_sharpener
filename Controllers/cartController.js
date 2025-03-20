@@ -1,7 +1,7 @@
-exports.getCart = (req, res) => {
+exports.getCartForUser = (req, res) => {
     res.send(`Fetching cart for user with ID: ${req.params.userId}`);
 };
 
-exports.postCart = (req, res) => {
+exports.addProductToCart = (req, res) => {
     res.send(`Adding product to cart for user with ID: ${req.params.userId}`);
 };

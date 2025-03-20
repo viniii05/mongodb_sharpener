@@ -1,8 +1,8 @@
-exports.getProduct = (req, res) => {
+exports.getAllProducts = (req, res) => {
     res.send("Fetching all products");
 };
 
-exports.postProduct = (req, res) => {
+exports.addProduct = (req, res) => {
     res.send("Adding a new product");
 };
 

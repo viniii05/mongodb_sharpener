@@ -1,11 +1,11 @@
-exports.getHome = (req,res) => {
+exports.getAllUsers = (req,res) => {
     res.send("Fetching all users");
 };
 
-exports.postHome = (req, res) => {
+exports.addUser = (req, res) => {
     res.send("Adding a new user");
 };
 
-exports.getById = (req, res) => {
+exports.getUserById = (req, res) => {
     res.send(`Fetching user with ID: ${req.params.id}`);
 };
