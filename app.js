@@ -1,6 +1,7 @@
 const express = require("express");
-const studentRoutes = require("./routes/studentRoutes");
-const courseRoutes = require("./routes/courseRoutes");
+const studentRoutes = require("./routes/userRoutes");
+const courseRoutes = require("./routes/productRoutes");
+const cartRoutes = require('./routes/cartRoutes');
 
 const app = express();
 const PORT = 3000;
@@ -11,8 +12,9 @@ app.get("/", (req, res) => {
     res.send("Welcome to the Student & Course Portal API!");
 });
 
-app.use("/students", studentRoutes);
-app.use("/courses", courseRoutes);
+app.use("/users", userRoutes);
+app.use("/products", productRoutes);
+app.use("/cart", cartRoutes);
 
 app.use("*", (req, res) => {
     res.status(404).send("Page not found");
