@@ -1,26 +1,27 @@
 const express = require("express");
-const userRoutes = require("./routes/userRoutes");
-const productRoutes = require('./routes/productRoutes');
-const cartRoutes = require('./routes/cartRoutes');
+const path = require("path");
+const bodyParser = require("body-parser");
 
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 
-app.use(express.json());
-app.use(express.static("views"));
+// Middleware to parse JSON and form data
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
+// Serve HTML Form
 app.get("/", (req, res) => {
-    res.send("Welcome to the Student & Course Portal API!");
+  res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
-app.use("/users", userRoutes);
-app.use("/api/products", productRoutes);
-app.use("/cart", cartRoutes);
-
-app.use("*", (req, res) => {
-    res.status(404).send("Page not found");
+// Handle POST request
+app.post("/add-product", (req, res) => {
+  const productName = req.body.productName;
+  console.log("Received Product:", productName);
+  res.json({ message: `Product "${productName}" added successfully!` });
 });
 
+// Start the server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
