@@ -1,5 +1,6 @@
+const path = require('path');
 exports.getAllProducts = (req, res) => {
-    res.send("Fetching all products");
+    res.sendFile(path.join(__dirname, "../views/allProducts.html"));
 };
 
 exports.addProduct = (req, res) => {
