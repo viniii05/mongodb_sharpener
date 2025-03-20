@@ -1,6 +1,6 @@
 const path = require('path');
 exports.getAllProducts = (req, res) => {
-    res.sendFile(path.join(__dirname, "../views/allProducts.html"));
+    res.sendFile(path.join(__dirname, "../views/productForm.html"));
 };
 
 exports.addProduct = (req, res) => {
