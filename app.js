@@ -1,27 +1,18 @@
-const express = require("express");
-const path = require("path");
-const bodyParser = require("body-parser");
+const express = require('express');
+const path = require('path');
 
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const mongoConnect = require('./util/database').mongoConnect;
 const app = express();
-const PORT = 4000;
 
-// Middleware to parse JSON and form data
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
 
-// Serve HTML Form
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "index.html"));
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Handle POST request
-app.post("/add-product", (req, res) => {
-  const productName = req.body.productName;
-  console.log("Received Product:", productName);
-  res.json({ message: `Product "${productName}" added successfully!` });
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+app.use('/admin',adminRoutes);
+app.use(shopRoutes);
+mongoConnect(() => {
+    app.listen(3000);
+})
