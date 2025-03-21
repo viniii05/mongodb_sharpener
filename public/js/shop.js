@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const container = document.getElementById("product-container");
 
     try {
-        const res = await fetch("/products"); // Fetch JSON data
-        const products = await res.json(); // Convert response to JSON
+        const res = await fetch("/products");
+        const products = await res.json();
 
         container.innerHTML = products.map(prod => `
             <div class="product">
@@ -21,17 +21,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Function to add to cart
+// ✅ Fixed: Add token to request
 function addToCart(productId, productName) {
+    const token = localStorage.getItem("token"); // ✅ Get token from storage
+
+    if (!token) {
+        alert("You must be logged in to add items to the cart.");
+        return;
+    }
+
     fetch('/cart', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `productId=${productId}`
-    }).then(response => {
-        if (response.ok) {
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // ✅ Send token
+        },
+        body: JSON.stringify({ productId }) 
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
             alert(`${productName} added to cart!`);
         } else {
             alert('Failed to add product to cart');
         }
-    }).catch(error => console.error('Error adding to cart:', error));
+    })
+    .catch(error => console.error('Error adding to cart:', error));
 }
+

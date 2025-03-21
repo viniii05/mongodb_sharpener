@@ -3,7 +3,7 @@ const getDb = require("../util/database").getDb;
 const bcrypt = require("bcryptjs");
 
 class User {
-    constructor(name, email, password, id) {
+    constructor(name, email, password,cart = { items: [] }, id) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -27,14 +27,47 @@ class User {
         }
     }
 
+    // addToCart(product) {
+    //     const db = getDb();
+        
+    //     return db.collection('users').findOne({ _id: new ObjectId(this._id) })
+    //         .then(user => {
+    //             const cart = user.cart || { items: [] };
+    //             const cartItems = cart.items;
+                
+    //             // Check if the product already exists in the cart
+    //             const existingProductIndex = cartItems.findIndex(item => item._id.toString() === product._id.toString());
+    
+    //             if (existingProductIndex >= 0) {
+    //                 // If product exists, increase its quantity
+    //                 cartItems[existingProductIndex].quantity += 1;
+    //             } else {
+    //                 // If product does not exist, add it with quantity 1
+    //                 cartItems.push({ ...product, quantity: 1 });
+    //             }
+    
+    //             // Update the user's cart in the database
+    //             return db.collection('users').updateOne(
+    //                 { _id: new ObjectId(this._id) },
+    //                 { $set: { cart: { items: cartItems } } }
+    //             );
+    //         })
+    //         .catch(err => console.error("Error updating cart:", err));
+    // }
+
     addToCart(product) {
         const db = getDb();
         
         return db.collection('users').findOne({ _id: new ObjectId(this._id) })
             .then(user => {
+                console.log(user);
+                if (!user) {
+                    throw new Error("User not found in database");
+                }
+    
                 const cart = user.cart || { items: [] };
                 const cartItems = cart.items;
-                
+    
                 // Check if the product already exists in the cart
                 const existingProductIndex = cartItems.findIndex(item => item._id.toString() === product._id.toString());
     
@@ -55,6 +88,26 @@ class User {
             .catch(err => console.error("Error updating cart:", err));
     }
     
+    
+    async getCart() {
+        const db = getDb();
+        const user = await db.collection('users').findOne({ _id: new ObjectId(this._id) });
+        return user.cart || { items: [] };
+    }
+
+    async removeFromCart(productId) {
+        const db = getDb();
+        const user = await db.collection('users').findOne({ _id: new ObjectId(this._id) });
+
+        if (!user) throw new Error("User not found");
+
+        const updatedCartItems = user.cart.items.filter(item => item._id.toString() !== productId.toString());
+
+        return db.collection('users').updateOne(
+            { _id: new ObjectId(this._id) },
+            { $set: { cart: { items: updatedCartItems } } }
+        );
+    }
 
     static async findByEmail(email) {
         const db = getDb();
