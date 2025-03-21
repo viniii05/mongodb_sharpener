@@ -27,34 +27,6 @@ class User {
         }
     }
 
-    // addToCart(product) {
-    //     const db = getDb();
-        
-    //     return db.collection('users').findOne({ _id: new ObjectId(this._id) })
-    //         .then(user => {
-    //             const cart = user.cart || { items: [] };
-    //             const cartItems = cart.items;
-                
-    //             // Check if the product already exists in the cart
-    //             const existingProductIndex = cartItems.findIndex(item => item._id.toString() === product._id.toString());
-    
-    //             if (existingProductIndex >= 0) {
-    //                 // If product exists, increase its quantity
-    //                 cartItems[existingProductIndex].quantity += 1;
-    //             } else {
-    //                 // If product does not exist, add it with quantity 1
-    //                 cartItems.push({ ...product, quantity: 1 });
-    //             }
-    
-    //             // Update the user's cart in the database
-    //             return db.collection('users').updateOne(
-    //                 { _id: new ObjectId(this._id) },
-    //                 { $set: { cart: { items: cartItems } } }
-    //             );
-    //         })
-    //         .catch(err => console.error("Error updating cart:", err));
-    // }
-
     addToCart(product) {
         const db = getDb();
         
@@ -117,6 +89,15 @@ class User {
     static async findUserById(userId) {
         const db = getDb();
         return await db.collection("users").findOne({ _id: new ObjectId(userId) });
+    }
+
+    async clearCart() {
+        const db = getDb();
+        this.cart = { items: [] };
+        return db.collection("users").updateOne(
+            { _id: new ObjectId(this._id) },
+            { $set: { cart: this.cart } }
+        );
     }
 }
 

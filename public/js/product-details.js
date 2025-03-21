@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    const productId = window.location.pathname.split("/").pop(); // Extract product ID from URL
+    const productId = window.location.pathname.split("/").pop();
     const container = document.getElementById("product-detail");
 
     try {
@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Function to add product to cart
 function addToCart(productId, productName) {
     fetch('/cart', {
         method: 'POST',

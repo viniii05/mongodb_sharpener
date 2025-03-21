@@ -21,9 +21,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// ✅ Fixed: Add token to request
 function addToCart(productId, productName) {
-    const token = localStorage.getItem("token"); // ✅ Get token from storage
+    const token = localStorage.getItem("token");
 
     if (!token) {
         alert("You must be logged in to add items to the cart.");
@@ -34,7 +33,7 @@ function addToCart(productId, productName) {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}` // ✅ Send token
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ productId }) 
     })

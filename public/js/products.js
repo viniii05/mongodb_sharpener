@@ -3,14 +3,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         const res = await fetch("/admin/admin-product", {
-            headers: { "Accept": "application/json" } // Ensure we get JSON
+            headers: { "Accept": "application/json" }
         });
 
         if (!res.ok) throw new Error("Failed to fetch products");
 
         const products = await res.json();
 
-        productList.innerHTML = ""; // Clear existing content
+        productList.innerHTML = "";
 
         products.forEach(product => {
             const li = document.createElement("li");
@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Function to delete product
 async function deleteProduct(productId) {
     try {
         const res = await fetch("/admin/delete-product", {
