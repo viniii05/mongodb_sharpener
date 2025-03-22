@@ -64,5 +64,27 @@ userSchema.methods.removeFromCart = async function (productId) {
     return this;
 };
 
+userSchema.methods.placeOrder = async function () {
+    const Order = require("./Order");
+
+    if (this.cart.items.length === 0) {
+        throw new Error("Cart is empty. Cannot place order.");
+    }
+
+    const order = new Order({
+        user: { userId: this._id, name: this.name },
+        items: this.cart.items.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity
+        }))
+    });
+
+    await order.save();
+    this.cart.items = [];  // Empty the cart after placing order
+    await this.save();
+
+    return order;
+};
+
 const User = mongoose.model('User',userSchema);
 module.exports = User;
