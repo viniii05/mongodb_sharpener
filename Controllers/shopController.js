@@ -1,5 +1,5 @@
 const path = require('path');
-const Product = require('../models/product');
+const Product = require('../models/Product');
 
 exports.getProducts = async (req, res) => {
     if (req.headers.accept.includes("text/html")) {
@@ -7,7 +7,8 @@ exports.getProducts = async (req, res) => {
     }
 
     try {
-        const products = await Product.fetchAll();
+        const products = await Product.find();
+        console.log(products);
         res.json(products);
     } catch (err) {
         console.error("Error fetching products:", err);
