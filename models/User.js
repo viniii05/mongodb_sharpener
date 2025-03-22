@@ -55,5 +55,14 @@ userSchema.statics.findByEmail = async function (email) {
     return await this.findOne({ email });
 };
 
+userSchema.methods.removeFromCart = async function (productId) {
+    this.cart.items = this.cart.items.filter(item => 
+        item.productId.toString() !== productId.toString()
+    );
+    
+    await this.save();
+    return this;
+};
+
 const User = mongoose.model('User',userSchema);
 module.exports = User;
