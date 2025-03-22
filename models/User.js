@@ -17,114 +17,43 @@ const userSchema = new Schema({
         required: true
     },
     cart: {
-        items: [{productId: {type: Schema.Types.ObjectId, ref: 'Product', required: true},
-        quantity: { type: Number, required: true}}]
+        items: [
+            {
+                productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
+                quantity: { type: Number, required: true }
+            }
+        ]
     }
 });
 
-module.exports = mongoose.model('User', userSchema);
+// ✅ Add to Cart Method
+userSchema.methods.addToCart = async function (product) {
+    const cartProductIndex = this.cart.items.findIndex(item => 
+        item.productId.toString() === product._id.toString()
+    );
 
-// const { ObjectId } = require("mongodb");
-// const getDb = require("../util/database").getDb;
-// const bcrypt = require("bcryptjs");
+    let updatedCartItems = [...this.cart.items];
 
-// class User {
-//     constructor(name, email, password,cart = { items: [] }, id) {
-//         this.name = name;
-//         this.email = email;
-//         this.password = password;
-//         this.cart = cart;
-//         this.createdAt = new Date();
-//         if (id) this._id = new ObjectId(id);
-//     }
+    if (cartProductIndex >= 0) {
+        // Product exists in cart, increase quantity
+        updatedCartItems[cartProductIndex].quantity += 1;
+    } else {
+        // New product, add it with quantity 1
+        updatedCartItems.push({
+            productId: product._id,
+            quantity: 1
+        });
+    }
 
-//     async save() {
-//         if (!this.password) {
-//             throw new Error("Password is undefined");
-//         }
+    this.cart.items = updatedCartItems;
+    await this.save();
+    return this;
+};
 
-//         const db = getDb();
-//         try {
-//             const hashedPassword = await bcrypt.hash(this.password, 12);
-//             this.password = hashedPassword;
-//             return await db.collection("users").insertOne(this);
-//         } catch (error) {
-//             console.error("Error inserting user:", error);
-//         }
-//     }
+// ✅ Find user by email method
+userSchema.statics.findByEmail = async function (email) {
+    return await this.findOne({ email });
+};
 
-//     addToCart(product) {
-//         const db = getDb();
-        
-//         return db.collection('users').findOne({ _id: new ObjectId(this._id) })
-//             .then(user => {
-//                 console.log(user);
-//                 if (!user) {
-//                     throw new Error("User not found in database");
-//                 }
-    
-//                 const cart = user.cart || { items: [] };
-//                 const cartItems = cart.items;
-    
-//                 // Check if the product already exists in the cart
-//                 const existingProductIndex = cartItems.findIndex(item => item._id.toString() === product._id.toString());
-    
-//                 if (existingProductIndex >= 0) {
-//                     // If product exists, increase its quantity
-//                     cartItems[existingProductIndex].quantity += 1;
-//                 } else {
-//                     // If product does not exist, add it with quantity 1
-//                     cartItems.push({ ...product, quantity: 1 });
-//                 }
-    
-//                 // Update the user's cart in the database
-//                 return db.collection('users').updateOne(
-//                     { _id: new ObjectId(this._id) },
-//                     { $set: { cart: { items: cartItems } } }
-//                 );
-//             })
-//             .catch(err => console.error("Error updating cart:", err));
-//     }
-    
-    
-//     async getCart() {
-//         const db = getDb();
-//         const user = await db.collection('users').findOne({ _id: new ObjectId(this._id) });
-//         return user.cart || { items: [] };
-//     }
-
-//     async removeFromCart(productId) {
-//         const db = getDb();
-//         const user = await db.collection('users').findOne({ _id: new ObjectId(this._id) });
-
-//         if (!user) throw new Error("User not found");
-
-//         const updatedCartItems = user.cart.items.filter(item => item._id.toString() !== productId.toString());
-
-//         return db.collection('users').updateOne(
-//             { _id: new ObjectId(this._id) },
-//             { $set: { cart: { items: updatedCartItems } } }
-//         );
-//     }
-
-//     static async findByEmail(email) {
-//         const db = getDb();
-//         return await db.collection("users").findOne({ email });
-//     }
-
-//     static async findUserById(userId) {
-//         const db = getDb();
-//         return await db.collection("users").findOne({ _id: new ObjectId(userId) });
-//     }
-
-//     async clearCart() {
-//         const db = getDb();
-//         this.cart = { items: [] };
-//         return db.collection("users").updateOne(
-//             { _id: new ObjectId(this._id) },
-//             { $set: { cart: this.cart } }
-//         );
-//     }
-// }
-
-// module.exports = User;
+const User = mongoose.model('User',userSchema);
+module.exports = User;

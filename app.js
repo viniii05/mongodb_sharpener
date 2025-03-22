@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require("./routes/auth");
-// const cartRoutes = require('./routes/cart');
+const cartRoutes = require('./routes/cart');
 // const orderRoutes = require('./routes/order');
 // const mongoConnect = require('./util/database').mongoConnect;
 
@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
-// app.use('/cart', cartRoutes);
+app.use('/cart', cartRoutes);
 app.use(authRoutes);
 // app.use(orderRoutes);
 

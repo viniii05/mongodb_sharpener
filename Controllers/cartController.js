@@ -5,34 +5,59 @@ const path = require("path");
 const Product = require("../models/Product");
 
 
-exports.addToCart = async (req, res) => {
-    try {
-        console.log("User ID received:", req.user._id);
+// exports.addToCart = async (req, res) => {
+    // try {
+        // console.log("User ID received:", req.user._id);
+// 
+        // if (!req.user || !req.user._id) {
+            // return res.status(401).json({ message: "Unauthorized: No user logged in" });
+        // }
 
+        // const productId = req.body.productId;
+        // if (!productId) {
+            // return res.status(400).json({ message: "Missing productId" });
+        // }
+
+        // const userData = await User.findById(req.user._id);
+        // if (!userData) {
+            // return res.status(404).json({ message: "User not found" });
+        // }
+
+        // const user = new User(userData.name, userData.email, userData.password, userData.cart, userData._id);
+
+        // await user.addToCart({ _id: new ObjectId(productId) });
+
+        // res.json({ message: "Product added to cart successfully" });
+    // } catch (error) {
+        // console.error("Error adding to cart:", error);
+        // res.status(500).json({ message: "Failed to add product to cart" });
+    // }
+// };
+
+exports.addToCart = async (req,res) => {
+    try{
         if (!req.user || !req.user._id) {
             return res.status(401).json({ message: "Unauthorized: No user logged in" });
         }
 
         const productId = req.body.productId;
-        if (!productId) {
-            return res.status(400).json({ message: "Missing productId" });
+        if(!productId) {
+            return res.status(400).json({message: "Missing product id"});
         }
 
-        const userData = await User.findUserById(req.user._id);
-        if (!userData) {
-            return res.status(404).json({ message: "User not found" });
+        const user = await User.findById(req.user._id);
+        if(!user){
+            return res.status(404).json({message: "User not found"});
         }
 
-        const user = new User(userData.name, userData.email, userData.password, userData.cart, userData._id);
+        const product = await Product.findById(productId);
+        await user.addToCart(product);
 
-        await user.addToCart({ _id: new ObjectId(productId) });
-
-        res.json({ message: "Product added to cart successfully" });
-    } catch (error) {
-        console.error("Error adding to cart:", error);
-        res.status(500).json({ message: "Failed to add product to cart" });
+    }catch(err) {
+        console.log("err adding cart:", err);
+        res.status(500).json({message : "Failed to add product to cart"});
     }
-};
+}
 
 exports.getCart = async (req, res) => {
     res.sendFile(path.join(__dirname, "../views/cart.html"));
