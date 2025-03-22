@@ -15,7 +15,8 @@ exports.postAddProduct = async (req, res) => {
             title: title,
             price: price, 
             description: description, 
-            imageUrl: imageUrl 
+            imageUrl: imageUrl,
+            userId: req.user._id
         });
         await product.save();
         res.status(201).json({ message: "Product added successfully!" });

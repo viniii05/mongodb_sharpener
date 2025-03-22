@@ -8,7 +8,7 @@ exports.getProducts = async (req, res) => {
 
     try {
         const products = await Product.find();
-        console.log(products);
+        
         res.json(products);
     } catch (err) {
         console.error("Error fetching products:", err);
